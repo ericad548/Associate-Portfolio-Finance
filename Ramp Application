@@ -1,0 +1,12 @@
+WITH clean_dates AS
+    (
+      SELECT TO_CHAR(transaction_time :: date, 'YYYY-MM-DD') AS sales_date,
+      SUM(transaction_amount) as total_sales
+      FROM transactions
+      GROUP BY sales_date
+      ORDER BY sales_date
+      )
+      
+     SELECT sales_date, total_sales, 
+     	round(AVG(total_sales) OVER(ORDER BY sales_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)) AS three_day_rolling_average
+     FROM clean_dates;
